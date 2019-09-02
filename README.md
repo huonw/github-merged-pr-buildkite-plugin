@@ -25,11 +25,13 @@ Ensure `Skip pull request builds for existing commits` is set to `false` in your
 
 ## Checkout Mode
 When using `checkout` mode, the plugin should be specified on each build step (e.g. where a checkout happens).
+When `continue_on_conflicts` is set to `false` (default), the build will stop and fail if there are any merge conflicts with the target branch; if it is `true`, the build will continue on the code without doing a merge, as if the plugin didn't run at all.
 
 ```yml
 plugins: &plugins
   - seek-oss/github-merged-pr#v1.1.2:
       mode: checkout
+      continue_on_conflicts: false # same as the default
 
 steps:
   - label: 'Make something'

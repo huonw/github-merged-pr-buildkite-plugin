@@ -67,6 +67,7 @@ trigger_pr_branch() {
 
 merge() {
   local target_branch="$1"
+  local continue_on_conflicts="${BUILDKITE_PLUGIN_GITHUB_MERGE_PR_CONTINUE_ON_CONFLICTS:-false}"
   if [[ -z "${target_branch}" ]] ; then
     echo "No pull request target branch"
     exit 1
@@ -81,8 +82,14 @@ merge() {
   git merge --no-edit "${BUILDKITE_COMMIT}" || {
     local merge_result=$?
     echo "Merge failed: ${merge_result}"
+    # restore the original state
     git merge --abort
-    exit $merge_result
+    git checkout "${BUILDKITE_COMMIT}"
+
+    if [[ "${continue_on_conflicts}" == false ]]; then
+      # there was conflicts, and we've not been asked to continue
+      exit $merge_result
+    fi
   }
 }
 

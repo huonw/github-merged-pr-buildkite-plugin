@@ -10,4 +10,6 @@ configuration:
       type: boolean
     oldest_pr:
       type: integer
+    continue_on_conflicts:
+      type: boolean
   required: []
